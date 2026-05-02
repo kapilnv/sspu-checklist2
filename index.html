@@ -265,14 +265,25 @@ select option { background: var(--surface2); }
       <span class="badge-text">MAY 2026 · ESE PRACTICAL</span>
     </div>
     <div class="header-title">SSPU <span>Readiness</span> Checklist</div>
-    <div class="header-sub">B.Tech CSIT & AIML · Internal Faculty · Practical/Skill Exam</div>
+    <div class="header-sub">B.Tech CSIT &amp; AIML · Internal Faculty · Practical/Skill Exam</div>
   </header>
 
-  <!-- SETUP BANNER (shown until API configured) -->
+  <!-- SETUP BANNER -->
   <div class="setup-banner show" id="setup-banner">
-    <p>⚙️ <strong>Admin Setup Required:</strong> Paste your Google Apps Script Web App URL below to enable live backend sync.</p>
-    <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/AKfycbzWP2gNtudZLeJzkNsiY-OtzjFPL8kHob-TxsQycV6PLuULUKkOc4lVo_e95we3Ls3bSQ/exec">
-    <button onclick="saveApiUrl()">Save URL</button>
+    <p>⚙️ <strong>Backend Setup:</strong> Paste your Google Apps Script Web App URL and test the connection first.</p>
+    <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/AKfycbyOKR-5NIVkYO-ONkj5jUi4seNNynGdD9JH2iR_tNjSym3R4S0ctVQsY9SZOPc5Qxd6WQ/exec">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+      <button onclick="testConnection()" id="test-btn">🔌 Test Connection</button>
+      <button onclick="saveApiUrl()" id="save-url-btn" style="display:none;background:#1C3A00;border-color:#3A6A00;color:#86EFAC;">✅ Save &amp; Use</button>
+    </div>
+    <div id="test-result" style="margin-top:10px;font-size:12px;display:none;padding:8px;border-radius:6px;"></div>
+    <div style="margin-top:12px;font-size:11px;color:#7A6A30;line-height:1.8;border-top:1px solid #3A2A00;padding-top:10px;">
+      <strong style="color:#A08030;">Deployment must be configured exactly like this:</strong><br>
+      1. Apps Script → <strong>Deploy → Manage Deployments</strong><br>
+      2. Click ✏️ Edit → set Version to <strong>New version</strong><br>
+      3. "Who has access" → <strong>Anyone</strong> <em>(not "Anyone with Google account")</em><br>
+      4. Click <strong>Deploy</strong> → copy URL ending in <code style="background:#1A1200;padding:1px 4px;border-radius:3px;">/exec</code>
+    </div>
   </div>
 
   <!-- TABS -->
@@ -281,7 +292,7 @@ select option { background: var(--surface2); }
     <button class="tab" onclick="switchTab('admin',this)">📊 Admin Dashboard</button>
   </div>
 
-  <!-- ═══ FACULTY VIEW ═══ -->
+  <!-- FACULTY VIEW -->
   <div class="view active" id="view-faculty">
     <div id="form-area">
       <div class="field-label">Select Your Name</div>
@@ -290,7 +301,6 @@ select option { background: var(--surface2); }
           <option value="">— Choose your name —</option>
         </select>
       </div>
-
       <div id="chk-area" style="display:none;">
         <div class="chk-card">
           <div class="chk-head">
@@ -303,7 +313,6 @@ select option { background: var(--surface2); }
         <button class="submit-btn" id="submit-btn" onclick="submitChecklist()">Submit My Status</button>
       </div>
     </div>
-
     <div class="thankyou" id="thankyou">
       <div class="ty-glow">✅</div>
       <div class="ty-title">Status Submitted!</div>
@@ -312,7 +321,7 @@ select option { background: var(--surface2); }
     </div>
   </div>
 
-  <!-- ═══ ADMIN VIEW ═══ -->
+  <!-- ADMIN VIEW -->
   <div class="view" id="view-admin">
     <div class="admin-gate" id="admin-gate">
       <div class="gate-icon">🔒</div>
@@ -321,7 +330,6 @@ select option { background: var(--surface2); }
       <input class="gate-input" type="password" id="admin-pass" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdmin()">
       <button class="gate-btn" onclick="checkAdmin()">Unlock</button>
     </div>
-
     <div id="admin-dash" style="display:none;">
       <div class="refresh-note"><span class="live-dot"></span>Live data from Google Sheets &nbsp;·&nbsp; <a href="#" onclick="loadDashData();return false;" style="color:var(--muted);text-decoration:none;">↻ Refresh</a></div>
       <div class="dash-stats" id="dash-stats">
@@ -330,20 +338,16 @@ select option { background: var(--surface2); }
         <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Ext. Confirmed</div></div>
         <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Slips Prepared</div></div>
       </div>
-
       <div class="action-bar">
         <button class="act-btn primary" onclick="copyReport()">📋 Copy WhatsApp Report</button>
-        <button class="act-btn" onclick="loadDashData()">↻ Refresh Data</button>
+        <button class="act-btn" onclick="loadDashData()">↻ Refresh</button>
       </div>
-
       <div class="filter-bar" id="filter-bar"></div>
       <input class="dash-search" id="dash-search" placeholder="Search faculty or course…" oninput="renderDash()">
-
       <div class="table-wrap">
         <table class="dash-table">
           <thead><tr>
-            <th>Faculty</th>
-            <th>Course</th>
+            <th>Faculty</th><th>Course</th>
             <th style="text-align:center;">Ext.</th>
             <th style="text-align:center;">Slips</th>
             <th style="text-align:center;">Informed</th>
@@ -355,13 +359,11 @@ select option { background: var(--surface2); }
     </div>
   </div>
 
-</div>
+</div><!-- /container -->
 <div class="toast" id="toast"></div>
 
 <script>
-/* ═══════════════════════════════════════════
-   FACULTY DATA
-═══════════════════════════════════════════ */
+/* ── FACULTY DATA ── */
 const FACULTY = [
   {id:'cs-fy-1', name:'Dr. Sunil D. Kale',          course:'Data Structures',                      code:'CS23201', dept:'CSIT', yr:'FY', sem:'II'},
   {id:'cs-fy-2', name:'Prof. Ashish Jadhao',         course:'Web Technology & Vulnerability',       code:'CS23202', dept:'CSIT', yr:'FY', sem:'II'},
@@ -395,38 +397,79 @@ const FACULTY = [
   {id:'ai-sy-6', name:'Dr. Rudresh D. Shirwaikar',  course:'AI in Cybersecurity',                  code:'AI0406B', dept:'AIML', yr:'SY', sem:'IV'},
 ];
 
-const ADMIN_PWD  = 'sspu2026';
-const API_KEY    = 'sspu_api_url';
-let   dashFilter = 'all';
-let   remoteData = {};   // { [id]: {ext,slips,info,ts} }
-let   currentChecks = {};
+const ADMIN_PWD = 'sspu2026';
+const API_KEY   = 'sspu_api_url';
+let dashFilter  = 'all';
+let remoteData  = {};
+let currentChecks = {};
 
-/* ═══════════════════════════════════════════
-   API URL MANAGEMENT
-═══════════════════════════════════════════ */
+/* ── API URL ── */
 function getApiUrl() { return localStorage.getItem(API_KEY) || ''; }
 
 function saveApiUrl() {
   const url = document.getElementById('api-url-input').value.trim();
-  if (!url.startsWith('https://script.google.com')) {
-    showToast('Please paste a valid Apps Script URL'); return;
-  }
+  if (!url.includes('script.google.com')) { showToast('Paste a valid Apps Script URL'); return; }
   localStorage.setItem(API_KEY, url);
   document.getElementById('setup-banner').classList.remove('show');
-  showToast('✅ Backend URL saved!');
+  showToast('✅ URL saved! Backend connected.');
 }
 
 function checkSetupBanner() {
-  if (!getApiUrl()) {
-    document.getElementById('setup-banner').classList.add('show');
+  const saved = getApiUrl();
+  const banner = document.getElementById('setup-banner');
+  if (!saved) {
+    banner.classList.add('show');
   } else {
-    document.getElementById('setup-banner').classList.remove('show');
+    banner.classList.remove('show');
+    document.getElementById('api-url-input').value = saved;
   }
 }
 
-/* ═══════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════ */
+/* ── CONNECTION TESTER ── */
+async function testConnection() {
+  const url = document.getElementById('api-url-input').value.trim();
+  if (!url.includes('script.google.com')) {
+    showResult('error', '❌ That does not look like an Apps Script URL. It should start with https://script.google.com/macros/s/...');
+    return;
+  }
+  if (!url.endsWith('/exec')) {
+    showResult('error', '❌ URL must end with <strong>/exec</strong>. Make sure you copied the Web App URL, not the editor URL.');
+    return;
+  }
+
+  const btn = document.getElementById('test-btn');
+  btn.textContent = '⏳ Testing…'; btn.disabled = true;
+
+  try {
+    const result = await jsonp(url, new URLSearchParams({ action: 'ping' }), 10000);
+    if (result && result.success) {
+      showResult('success', '✅ Connected successfully! Click "Save & Use" to activate this backend.');
+      document.getElementById('save-url-btn').style.display = 'inline-block';
+    } else {
+      showResult('error', '❌ Script responded but returned an error: ' + JSON.stringify(result));
+    }
+  } catch(e) {
+    showResult('error',
+      '❌ <strong>Could not reach the script.</strong> Most likely cause:<br><br>' +
+      '• "Who has access" is NOT set to <strong>Anyone</strong> (anonymous)<br>' +
+      '• You edited the script but did NOT create a <strong>New version</strong> before deploying<br>' +
+      '• The URL was copied from the editor instead of the deployment<br><br>' +
+      'Fix: Deploy → Manage Deployments → ✏️ Edit → New version → Anyone → Deploy'
+    );
+  }
+  btn.textContent = '🔌 Test Again'; btn.disabled = false;
+}
+
+function showResult(type, html) {
+  const el = document.getElementById('test-result');
+  el.style.display = 'block';
+  el.style.background = type === 'success' ? '#0A1C10' : '#1C0A0A';
+  el.style.border = '1px solid ' + (type === 'success' ? '#22543D' : '#5C0000');
+  el.style.color  = type === 'success' ? '#86EFAC' : '#FCA5A5';
+  el.innerHTML = html;
+}
+
+/* ── INIT ── */
 function init() {
   checkSetupBanner();
   buildFacultyDropdown();
@@ -436,58 +479,43 @@ function init() {
 function buildFacultyDropdown() {
   const sel = document.getElementById('faculty-select');
   const groups = {};
-  FACULTY.forEach(f => {
-    const key = `${f.yr}|${f.dept}`;
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(f);
-  });
+  FACULTY.forEach(f => { const k = f.yr+'|'+f.dept; if(!groups[k]) groups[k]=[]; groups[k].push(f); });
   [['FY','CSIT'],['FY','AIML'],['SY','CSIT'],['SY','AIML'],['TY','CSIT']].forEach(([yr,dept]) => {
-    const arr = groups[`${yr}|${dept}`] || [];
+    const arr = groups[yr+'|'+dept] || [];
     if (!arr.length) return;
     const og = document.createElement('optgroup');
-    og.label = `${yr} – ${dept} (Sem ${arr[0].sem})`;
-    arr.forEach(f => {
-      const o = document.createElement('option');
-      o.value = f.id;
-      o.textContent = `${f.name}  ·  ${f.code}`;
-      og.appendChild(o);
-    });
+    og.label = yr+' – '+dept+' (Sem '+arr[0].sem+')';
+    arr.forEach(f => { const o = document.createElement('option'); o.value=f.id; o.textContent=f.name+'  ·  '+f.code; og.appendChild(o); });
     sel.appendChild(og);
   });
 }
 
-/* ═══════════════════════════════════════════
-   FACULTY FORM
-═══════════════════════════════════════════ */
+/* ── FACULTY FORM ── */
 function onFacultyChange() {
-  const id  = document.getElementById('faculty-select').value;
+  const id = document.getElementById('faculty-select').value;
   const area = document.getElementById('chk-area');
-  if (!id) { area.style.display = 'none'; return; }
-
-  const f = FACULTY.find(x => x.id === id);
+  if (!id) { area.style.display='none'; return; }
+  const f = FACULTY.find(x => x.id===id);
   document.getElementById('sel-name').textContent = f.name;
-  document.getElementById('sel-meta').textContent = `${f.code} · ${f.course}`;
+  document.getElementById('sel-meta').textContent = f.code+' · '+f.course;
   document.getElementById('sel-tags').innerHTML =
-    `<span class="tag tag-${f.dept.toLowerCase()}">${f.dept}</span>
-     <span class="tag tag-yr">${f.yr} · Sem ${f.sem}</span>`;
-
+    '<span class="tag tag-'+f.dept.toLowerCase()+'">'+f.dept+'</span> <span class="tag tag-yr">'+f.yr+' · Sem '+f.sem+'</span>';
   const saved = remoteData[id] || {};
-  currentChecks = { ext: saved.ext ?? false, slips: saved.slips ?? false, info: saved.info ?? false };
+  currentChecks = { ext: saved.ext??false, slips: saved.slips??false, info: saved.info??false };
   renderChkItems();
   area.style.display = 'block';
 }
 
 function renderChkItems() {
-  const QUESTIONS = [
+  const QS = [
     { key:'ext',   q:'External Faculty Confirmed?',  hint:'Examiner has confirmed date, time & subject.' },
     { key:'slips', q:'Practical Slips Prepared?',    hint:'Lab slips / task sheets are printed and ready.' },
     { key:'info',  q:'Students Informed?',           hint:'Students know exam date, time & venue.' },
   ];
-  document.getElementById('chk-items').innerHTML = QUESTIONS.map(q =>
-    `<div class="chk-item ${currentChecks[q.key]?'checked':''}" onclick="toggleCheck('${q.key}',this)">
-      <div class="chk-box"><span class="chk-tick">✓</span></div>
-      <div class="chk-text"><div class="chk-q">${q.q}</div><div class="chk-hint">${q.hint}</div></div>
-    </div>`
+  document.getElementById('chk-items').innerHTML = QS.map(q =>
+    '<div class="chk-item '+(currentChecks[q.key]?'checked':'')+'" onclick="toggleCheck(\''+q.key+'\',this)">'+
+    '<div class="chk-box"><span class="chk-tick">✓</span></div>'+
+    '<div class="chk-text"><div class="chk-q">'+q.q+'</div><div class="chk-hint">'+q.hint+'</div></div></div>'
   ).join('');
 }
 
@@ -499,239 +527,149 @@ function toggleCheck(key, el) {
 async function submitChecklist() {
   const id = document.getElementById('faculty-select').value;
   if (!id) return;
-  const f  = FACULTY.find(x => x.id === id);
+  const f = FACULTY.find(x => x.id===id);
   const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Submitting…';
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Submitting…';
 
   const apiUrl = getApiUrl();
   if (!apiUrl) {
-    // fallback: save locally and show success
     remoteData[id] = { ...currentChecks, ts: new Date().toISOString() };
-    showSuccess();
-    btn.disabled = false; btn.innerHTML = 'Submit My Status';
-    showToast('⚠️ No backend configured — saved locally only');
-    return;
+    showSuccess(); btn.disabled=false; btn.innerHTML='Submit My Status';
+    showToast('⚠️ No backend — saved locally only'); return;
   }
 
   const params = new URLSearchParams({
     action:'submit', id, name:f.name, code:f.code,
     course:f.course, dept:f.dept, yr:f.yr,
-    ext: currentChecks.ext, slips: currentChecks.slips, info: currentChecks.info
+    ext:currentChecks.ext, slips:currentChecks.slips, info:currentChecks.info
   });
-
   try {
     const json = await jsonp(apiUrl, params);
-    if (json.success) {
-      remoteData[id] = { ...currentChecks, ts: new Date().toISOString() };
-      showSuccess();
-    } else {
-      showToast('❌ Error: ' + (json.error || 'Unknown'));
-    }
-  } catch(e) {
-    showToast('❌ Could not reach backend — check the URL in setup');
-  }
-  btn.disabled = false; btn.innerHTML = 'Submit My Status';
+    if (json.success) { remoteData[id]={...currentChecks,ts:new Date().toISOString()}; showSuccess(); }
+    else showToast('❌ '+( json.error||'Unknown error'));
+  } catch(e) { showToast('❌ Submit failed — '+e.message); }
+  btn.disabled=false; btn.innerHTML='Submit My Status';
 }
 
 function showSuccess() {
-  document.getElementById('form-area').style.display = 'none';
-  document.getElementById('thankyou').style.display = 'block';
+  document.getElementById('form-area').style.display='none';
+  document.getElementById('thankyou').style.display='block';
 }
-
 function resetForm() {
-  document.getElementById('faculty-select').value = '';
-  document.getElementById('chk-area').style.display = 'none';
-  document.getElementById('form-area').style.display = 'block';
-  document.getElementById('thankyou').style.display = 'none';
+  document.getElementById('faculty-select').value='';
+  document.getElementById('chk-area').style.display='none';
+  document.getElementById('form-area').style.display='block';
+  document.getElementById('thankyou').style.display='none';
 }
 
-/* ═══════════════════════════════════════════
-   TABS
-═══════════════════════════════════════════ */
+/* ── TABS ── */
 function switchTab(t, el) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('view-'+t).classList.add('active');
-  el.classList.add('active');
-  if (t === 'admin' && document.getElementById('admin-dash').style.display !== 'none') loadDashData();
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+t).classList.add('active'); el.classList.add('active');
+  if (t==='admin' && document.getElementById('admin-dash').style.display!=='none') loadDashData();
 }
 
-/* ═══════════════════════════════════════════
-   ADMIN
-═══════════════════════════════════════════ */
+/* ── ADMIN ── */
 function checkAdmin() {
-  const v = document.getElementById('admin-pass').value.trim();
-  if (v === ADMIN_PWD) {
-    document.getElementById('admin-gate').style.display = 'none';
-    document.getElementById('admin-dash').style.display = 'block';
+  if (document.getElementById('admin-pass').value.trim()===ADMIN_PWD) {
+    document.getElementById('admin-gate').style.display='none';
+    document.getElementById('admin-dash').style.display='block';
     loadDashData();
-  } else {
-    showToast('Incorrect password');
-  }
+  } else showToast('Incorrect password');
 }
 
 async function loadDashData() {
   const apiUrl = getApiUrl();
   if (!apiUrl) { renderDash(); return; }
-
-  document.getElementById('dash-tbody').innerHTML =
-    '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">Fetching from Google Sheets…</td></tr>';
-
+  document.getElementById('dash-tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">Fetching from Google Sheets…</td></tr>';
   try {
-    const json = await jsonp(apiUrl, new URLSearchParams({ action:'getAll' }));
-    if (json.success) {
-      remoteData = {};
-      json.data.forEach(r => { remoteData[r.id] = r; });
-    } else {
-      showToast('❌ ' + (json.error || 'Fetch error'));
-    }
-  } catch(e) {
-    showToast('❌ Could not reach backend — check the URL in setup');
-  }
+    const json = await jsonp(apiUrl, new URLSearchParams({action:'getAll'}));
+    if (json.success) { remoteData={}; json.data.forEach(r=>{remoteData[r.id]=r;}); }
+    else showToast('❌ '+(json.error||'Fetch error'));
+  } catch(e) { showToast('❌ Could not reach backend — '+e.message); }
   renderDash();
 }
 
 function buildDashFilters() {
-  const filters = [['all','All'],['CSIT','CSIT'],['AIML','AIML'],['FY','FY'],['SY','SY'],['TY','TY'],['pending','⚠ Pending']];
-  document.getElementById('filter-bar').innerHTML = filters.map(([f,l]) =>
-    `<button class="fbtn ${f==='all'?'on':''}" onclick="setFilter('${f}',this)">${l}</button>`
+  const filters=[['all','All'],['CSIT','CSIT'],['AIML','AIML'],['FY','FY'],['SY','SY'],['TY','TY'],['pending','⚠ Pending']];
+  document.getElementById('filter-bar').innerHTML=filters.map(([f,l])=>
+    '<button class="fbtn '+(f==='all'?'on':'')+'" onclick="setFilter(\''+f+'\',this)">'+l+'</button>'
   ).join('');
 }
-
-function setFilter(f, el) {
-  dashFilter = f;
-  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
-  el.classList.add('on');
-  renderDash();
+function setFilter(f,el) {
+  dashFilter=f; document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on')); el.classList.add('on'); renderDash();
 }
 
 function renderDash() {
-  const q = (document.getElementById('dash-search')?.value || '').toLowerCase();
-  let total=FACULTY.length, done=0, ext=0, slips=0, info=0;
-  FACULTY.forEach(f => {
-    const s = remoteData[f.id] || {};
-    if(s.ext)   ext++;
-    if(s.slips) slips++;
-    if(s.info)  info++;
-    if(s.ext && s.slips && s.info) done++;
-  });
+  const q=(document.getElementById('dash-search')?.value||'').toLowerCase();
+  let total=FACULTY.length,done=0,ext=0,slips=0,info=0;
+  FACULTY.forEach(f=>{const s=remoteData[f.id]||{};if(s.ext)ext++;if(s.slips)slips++;if(s.info)info++;if(s.ext&&s.slips&&s.info)done++;});
+  document.getElementById('dash-stats').innerHTML=[
+    [total,total,'Total Faculty'],[done,total,'All 3 Done'],[ext,total,'Ext. Confirmed'],[slips,total,'Slips Prepared']
+  ].map(([v,t,l])=>
+    '<div class="stat-card"><div class="stat-val">'+v+'</div><div class="stat-lbl">'+l+'</div>'+
+    '<div class="progress-track"><div class="progress-fill" style="width:'+Math.round(v/t*100)+'%"></div></div></div>'
+  ).join('');
 
-  document.getElementById('dash-stats').innerHTML = [
-    [total, total, 'Total Faculty'],
-    [done,  total, 'All 3 Done'],
-    [ext,   total, 'Ext. Confirmed'],
-    [slips, total, 'Slips Prepared'],
-  ].map(([v,t,l]) => `
-    <div class="stat-card">
-      <div class="stat-val">${v}</div>
-      <div class="stat-lbl">${l}</div>
-      <div class="progress-track"><div class="progress-fill" style="width:${Math.round(v/t*100)}%"></div></div>
-    </div>`).join('');
-
-  const visible = FACULTY.filter(f => {
-    const s = remoteData[f.id] || {};
-    const allDone = s.ext && s.slips && s.info;
-    const matchQ = !q || f.name.toLowerCase().includes(q) || f.course.toLowerCase().includes(q) || f.code.toLowerCase().includes(q);
-    if (!matchQ) return false;
-    if (dashFilter==='all') return true;
-    if (dashFilter==='CSIT') return f.dept==='CSIT';
-    if (dashFilter==='AIML') return f.dept==='AIML';
-    if (dashFilter==='FY')   return f.yr==='FY';
-    if (dashFilter==='SY')   return f.yr==='SY';
-    if (dashFilter==='TY')   return f.yr==='TY';
-    if (dashFilter==='pending') return !allDone;
+  const visible=FACULTY.filter(f=>{
+    const s=remoteData[f.id]||{};
+    const ok=!q||f.name.toLowerCase().includes(q)||f.course.toLowerCase().includes(q)||f.code.toLowerCase().includes(q);
+    if(!ok) return false;
+    if(dashFilter==='all') return true;
+    if(dashFilter==='CSIT') return f.dept==='CSIT';
+    if(dashFilter==='AIML') return f.dept==='AIML';
+    if(dashFilter==='FY')   return f.yr==='FY';
+    if(dashFilter==='SY')   return f.yr==='SY';
+    if(dashFilter==='TY')   return f.yr==='TY';
+    if(dashFilter==='pending') return !(s.ext&&s.slips&&s.info);
     return true;
   });
 
-  function icon(val) {
-    if (val === true)  return '<span class="icon-yes">✓</span>';
-    if (val === false) return '<span class="icon-no">✗</span>';
-    return '<span class="icon-pend">—</span>';
-  }
+  function icon(v){return v===true?'<span class="icon-yes">✓</span>':v===false?'<span class="icon-no">✗</span>':'<span class="icon-pend">—</span>';}
+  function fmtTs(ts){if(!ts) return '<span class="icon-pend">—</span>';try{const d=new Date(ts);return'<span class="ts-cell">'+d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})+'</span>';}catch(e){return'—';}}
 
-  function fmtTs(ts) {
-    if (!ts) return '<span class="icon-pend">—</span>';
-    try {
-      const d = new Date(ts);
-      return `<span class="ts-cell">${d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})} ${d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</span>`;
-    } catch(e) { return '—'; }
-  }
-
-  if (!visible.length) {
-    document.getElementById('dash-tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">No results</td></tr>';
-    return;
-  }
-
-  document.getElementById('dash-tbody').innerHTML = visible.map(f => {
-    const s = remoteData[f.id] || {};
-    return `<tr>
-      <td>
-        <div class="fname-cell">${f.name}</div>
-        <div class="fmeta-cell">${f.yr} &nbsp;<span class="tag tag-${f.dept.toLowerCase()}" style="padding:1px 6px;font-size:9px;">${f.dept}</span></div>
-      </td>
-      <td><div class="course-cell">${f.course}</div><div class="fmeta-cell">${f.code}</div></td>
-      <td style="text-align:center;">${icon(s.ext  ?? null)}</td>
-      <td style="text-align:center;">${icon(s.slips ?? null)}</td>
-      <td style="text-align:center;">${icon(s.info  ?? null)}</td>
-      <td>${fmtTs(s.ts)}</td>
-    </tr>`;
+  if(!visible.length){document.getElementById('dash-tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">No results</td></tr>';return;}
+  document.getElementById('dash-tbody').innerHTML=visible.map(f=>{
+    const s=remoteData[f.id]||{};
+    return '<tr><td><div class="fname-cell">'+f.name+'</div><div class="fmeta-cell">'+f.yr+' &nbsp;<span class="tag tag-'+f.dept.toLowerCase()+'" style="padding:1px 6px;font-size:9px;">'+f.dept+'</span></div></td>'+
+      '<td><div class="course-cell">'+f.course+'</div><div class="fmeta-cell">'+f.code+'</div></td>'+
+      '<td style="text-align:center;">'+icon(s.ext??null)+'</td>'+
+      '<td style="text-align:center;">'+icon(s.slips??null)+'</td>'+
+      '<td style="text-align:center;">'+icon(s.info??null)+'</td>'+
+      '<td>'+fmtTs(s.ts)+'</td></tr>';
   }).join('');
 }
 
 function copyReport() {
-  const lines = ['*SSPU Practical Exam Readiness — May 2026*', ''];
-  const groups = {FY:{CSIT:[],AIML:[]},SY:{CSIT:[],AIML:[]},TY:{CSIT:[],AIML:[]}};
-  FACULTY.forEach(f => { groups[f.yr]?.[f.dept]?.push(f); });
-  ['FY','SY','TY'].forEach(yr => ['CSIT','AIML'].forEach(dept => {
-    const arr = groups[yr][dept] || [];
-    if (!arr.length) return;
-    lines.push(`*${yr} – ${dept}*`);
-    arr.forEach(f => {
-      const s = remoteData[f.id] || {};
-      lines.push(`${f.name} (${f.code})`);
-      lines.push(`  ${s.ext?'✅':'❌'} Ext. Confirmed   ${s.slips?'✅':'❌'} Slips Prepared   ${s.info?'✅':'❌'} Students Informed`);
-    });
+  const lines=['*SSPU Practical Exam Readiness — May 2026*',''];
+  const g={FY:{CSIT:[],AIML:[]},SY:{CSIT:[],AIML:[]},TY:{CSIT:[],AIML:[]}};
+  FACULTY.forEach(f=>{g[f.yr]?.[f.dept]?.push(f);});
+  ['FY','SY','TY'].forEach(yr=>['CSIT','AIML'].forEach(dept=>{
+    const arr=g[yr][dept]||[];if(!arr.length)return;
+    lines.push('*'+yr+' – '+dept+'*');
+    arr.forEach(f=>{const s=remoteData[f.id]||{};lines.push(f.name+' ('+f.code+')');lines.push('  '+(s.ext?'✅':'❌')+' Ext. Confirmed   '+(s.slips?'✅':'❌')+' Slips Prepared   '+(s.info?'✅':'❌')+' Students Informed');});
     lines.push('');
   }));
-  navigator.clipboard.writeText(lines.join('\n')).then(() => showToast('📋 Copied to clipboard!'));
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>showToast('📋 Copied to clipboard!'));
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-/* ═══════════════════════════════════════════
-   JSONP — bypasses CORS for Google Apps Script
-═══════════════════════════════════════════ */
-function jsonp(baseUrl, params, timeout = 12000) {
-  return new Promise((resolve, reject) => {
-    const cb  = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1e6);
-    params.set('callback', cb);
-    const url = baseUrl + '?' + params.toString();
-
-    const script = document.createElement('script');
-    script.src   = url;
-
-    const timer = setTimeout(() => {
-      cleanup();
-      reject(new Error('Timeout'));
-    }, timeout);
-
-    window[cb] = (data) => {
-      clearTimeout(timer);
-      cleanup();
-      resolve(data);
-    };
-
-    function cleanup() {
-      delete window[cb];
-      if (script.parentNode) script.parentNode.removeChild(script);
-    }
-
-    script.onerror = () => { clearTimeout(timer); cleanup(); reject(new Error('Script load error')); };
+/* ── JSONP (bypasses CORS for Google Apps Script) ── */
+function jsonp(baseUrl, params, timeout=12000) {
+  return new Promise((resolve,reject)=>{
+    const cb='cb_'+Date.now()+'_'+Math.floor(Math.random()*1e6);
+    params.set('callback',cb);
+    const script=document.createElement('script');
+    script.src=baseUrl+'?'+params.toString();
+    const timer=setTimeout(()=>{cleanup();reject(new Error('Timeout — script took too long'));},timeout);
+    window[cb]=(data)=>{clearTimeout(timer);cleanup();resolve(data);};
+    function cleanup(){delete window[cb];if(script.parentNode)script.parentNode.removeChild(script);}
+    script.onerror=()=>{clearTimeout(timer);cleanup();reject(new Error('Script blocked — check deployment access setting'));};
     document.head.appendChild(script);
   });
 }
