@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSPU · Practical Exam Readiness</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0F1A14;
+  --surface: #162019;
+  --surface2: #1C2B21;
+  --border: #2A3D2F;
+  --border2: #354A3A;
+  --accent: #4ADE80;
+  --accent-dim: #22543D;
+  --accent-text: #BBF7D0;
+  --text: #E8F5EC;
+  --muted: #7A9E85;
+  --muted2: #4A6B55;
+  --warn: #FCD34D;
+  --warn-bg: #1C1A0A;
+  --danger: #F87171;
+  --danger-bg: #1C0A0A;
+  --success: #4ADE80;
+  --success-bg: #0A1C10;
+  --font: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* grid bg texture */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(74,222,128,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74,222,128,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none; z-index: 0;
+}
+
+.container { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* ── HEADER ── */
+header {
+  padding: 32px 0 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+.header-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 5px 14px 5px 8px;
+  margin-bottom: 16px;
+}
+.badge-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.badge-text { font-size: 11px; font-family: var(--mono); color: var(--muted); letter-spacing: 0.05em; }
+
+.header-title { font-size: 26px; font-weight: 700; color: var(--text); line-height: 1.2; }
+.header-title span { color: var(--accent); }
+.header-sub { font-size: 13px; color: var(--muted); margin-top: 6px; font-family: var(--mono); }
+
+/* ── TABS ── */
+.tabs { display: flex; gap: 4px; margin-bottom: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px; }
+.tab { flex: 1; padding: 9px 16px; border-radius: var(--radius-sm); border: none; font-family: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; color: var(--muted); background: transparent; transition: all 0.15s; }
+.tab:hover { color: var(--text); }
+.tab.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border2); }
+
+/* ── VIEW ── */
+.view { display: none; }
+.view.active { display: block; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+
+/* ── SETUP BANNER ── */
+.setup-banner {
+  background: var(--warn-bg);
+  border: 1px solid #5C4A00;
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  display: none;
+}
+.setup-banner.show { display: block; }
+.setup-banner p { font-size: 13px; color: var(--warn); margin-bottom: 8px; }
+.setup-banner input { width: 100%; padding: 9px 12px; border-radius: var(--radius-sm); border: 1px solid #5C4A00; background: #100E00; color: var(--warn); font-family: var(--mono); font-size: 12px; margin-bottom: 6px; outline: none; }
+.setup-banner button { padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid #5C4A00; background: transparent; color: var(--warn); font-family: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; }
+.setup-banner button:hover { background: #1C1500; }
+
+/* ── LABEL ── */
+.field-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 8px; font-family: var(--mono); }
+
+/* ── SELECT ── */
+.select-wrap { position: relative; margin-bottom: 20px; }
+.select-wrap::after { content: '▾'; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 12px; }
+select {
+  width: 100%; padding: 12px 40px 12px 14px;
+  border: 1px solid var(--border2); border-radius: var(--radius);
+  background: var(--surface); color: var(--text);
+  font-family: var(--font); font-size: 14px;
+  appearance: none; -webkit-appearance: none; outline: none;
+  transition: border-color 0.15s;
+}
+select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(74,222,128,0.1); }
+select option { background: var(--surface2); }
+
+/* ── CHECKLIST CARD ── */
+.chk-card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; }
+.chk-head { padding: 18px 20px; border-bottom: 1px solid var(--border); }
+.chk-head-name { font-size: 16px; font-weight: 600; color: var(--text); }
+.chk-head-meta { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 4px; }
+.chk-head-tags { display: flex; gap: 6px; margin-top: 10px; }
+.tag { font-size: 10px; font-family: var(--mono); font-weight: 500; padding: 3px 9px; border-radius: 4px; }
+.tag-csit { background: #0A1A3C; color: #60A5FA; border: 1px solid #1E3A6A; }
+.tag-aiml { background: var(--success-bg); color: var(--accent); border: 1px solid var(--accent-dim); }
+.tag-yr { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+
+.chk-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.12s; user-select: none;
+}
+.chk-item:last-child { border-bottom: none; }
+.chk-item:hover { background: var(--surface2); }
+.chk-item.checked { background: #091410; }
+
+.chk-box {
+  width: 26px; height: 26px; border-radius: 7px;
+  border: 1.5px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.15s; background: var(--surface2);
+}
+.chk-item.checked .chk-box { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 12px rgba(74,222,128,0.4); }
+.chk-tick { display: none; color: #0F1A14; font-size: 13px; font-weight: 800; }
+.chk-item.checked .chk-tick { display: block; }
+.chk-q { font-size: 14px; font-weight: 500; color: var(--text); }
+.chk-hint { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.chk-item.checked .chk-q { color: var(--accent); }
+
+/* ── STATUS PILLS ── */
+.status-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.status-pill { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; border: 1px solid; }
+.sp-done { background: var(--success-bg); color: var(--accent); border-color: var(--accent-dim); }
+.sp-partial { background: var(--warn-bg); color: var(--warn); border-color: #5C4A00; }
+.sp-none { background: var(--danger-bg); color: var(--danger); border-color: #5C0000; }
+
+/* ── SUBMIT BUTTON ── */
+.submit-btn {
+  width: 100%; padding: 14px; border-radius: var(--radius);
+  background: var(--accent); color: #0F1A14; border: none;
+  font-family: var(--font); font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all 0.15s; letter-spacing: 0.02em;
+}
+.submit-btn:hover { background: #86EFAC; box-shadow: 0 0 20px rgba(74,222,128,0.3); }
+.submit-btn:active { transform: scale(0.99); }
+.submit-btn:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
+
+/* ── SPINNER ── */
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(15,26,20,0.3); border-top-color: #0F1A14; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── THANK YOU ── */
+.thankyou { text-align: center; padding: 48px 20px; display: none; }
+.ty-glow { font-size: 56px; margin-bottom: 16px; filter: drop-shadow(0 0 16px rgba(74,222,128,0.6)); }
+.ty-title { font-size: 22px; font-weight: 700; color: var(--accent); }
+.ty-sub { font-size: 14px; color: var(--muted); margin-top: 6px; }
+.ty-btn { margin-top: 24px; padding: 10px 24px; border-radius: var(--radius-sm); border: 1px solid var(--border2); background: var(--surface); color: var(--muted); font-family: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+.ty-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── ADMIN GATE ── */
+.admin-gate { display: flex; flex-direction: column; align-items: center; padding: 60px 20px; text-align: center; }
+.gate-icon { font-size: 40px; margin-bottom: 16px; }
+.gate-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+.gate-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+.gate-input { width: 100%; max-width: 280px; padding: 12px 16px; border-radius: var(--radius); border: 1px solid var(--border2); background: var(--surface); color: var(--text); font-family: var(--mono); font-size: 14px; text-align: center; outline: none; margin-bottom: 12px; transition: border-color 0.15s; }
+.gate-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(74,222,128,0.1); }
+.gate-btn { padding: 11px 32px; border-radius: var(--radius); background: var(--accent); color: #0F1A14; border: none; font-family: var(--font); font-size: 14px; font-weight: 700; cursor: pointer; }
+
+/* ── DASH STATS ── */
+.dash-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 24px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 16px; }
+.stat-val { font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1; }
+.stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; font-family: var(--mono); }
+.progress-track { background: var(--surface2); border-radius: 3px; height: 3px; margin-top: 10px; }
+.progress-fill { height: 3px; border-radius: 3px; background: var(--accent); transition: width 0.4s; }
+
+/* filter */
+.filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.fbtn { padding: 5px 13px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); font-size: 12px; font-weight: 500; cursor: pointer; color: var(--muted); font-family: var(--font); transition: all 0.12s; }
+.fbtn:hover { border-color: var(--border2); color: var(--text); }
+.fbtn.on { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-dim); }
+
+/* search */
+.dash-search { width: 100%; padding: 10px 14px; border-radius: var(--radius); border: 1px solid var(--border2); background: var(--surface); color: var(--text); font-family: var(--font); font-size: 13px; outline: none; margin-bottom: 14px; transition: border-color 0.15s; }
+.dash-search:focus { border-color: var(--accent); }
+.dash-search::placeholder { color: var(--muted2); }
+
+/* action bar */
+.action-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.act-btn { padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border2); background: var(--surface); font-size: 12px; font-weight: 500; cursor: pointer; font-family: var(--font); color: var(--muted); transition: all 0.12s; }
+.act-btn:hover { border-color: var(--accent); color: var(--accent); }
+.act-btn.primary { background: var(--surface2); color: var(--text); }
+
+/* table */
+.table-wrap { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; overflow-x: auto; }
+.dash-table { width: 100%; border-collapse: collapse; min-width: 540px; }
+.dash-table th { text-align: left; font-size: 10px; font-weight: 600; color: var(--muted2); letter-spacing: 0.07em; text-transform: uppercase; padding: 10px 14px; background: var(--surface2); border-bottom: 1px solid var(--border); font-family: var(--mono); }
+.dash-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+.dash-table tr:last-child td { border-bottom: none; }
+.dash-table tbody tr:hover td { background: var(--surface2); }
+.fname-cell { font-weight: 500; color: var(--text); font-size: 13px; }
+.fmeta-cell { font-size: 10px; color: var(--muted2); font-family: var(--mono); margin-top: 2px; }
+.course-cell { font-size: 12px; color: var(--muted); }
+
+.icon-yes { color: var(--accent); font-size: 16px; }
+.icon-no  { color: var(--danger); font-size: 16px; opacity: 0.7; }
+.icon-pend { color: var(--muted2); font-size: 16px; }
+
+.ts-cell { font-size: 10px; color: var(--muted2); font-family: var(--mono); }
+
+/* toast */
+.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #0F1A14; padding: 10px 24px; border-radius: 24px; font-size: 13px; font-weight: 600; opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 999; white-space: nowrap; }
+.toast.show { opacity: 1; }
+
+/* refresh note */
+.refresh-note { font-size: 11px; color: var(--muted2); font-family: var(--mono); margin-bottom: 14px; }
+.live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 6px var(--accent); margin-right: 4px; animation: pulse 2s infinite; }
+
+@media (max-width: 480px) {
+  .dash-stats { grid-template-columns: repeat(2,1fr); }
+  .header-title { font-size: 21px; }
+  .tabs { gap: 2px; }
+  .tab { padding: 8px 10px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-badge">
+      <span class="badge-dot"></span>
+      <span class="badge-text">MAY 2026 · ESE PRACTICAL</span>
+    </div>
+    <div class="header-title">SSPU <span>Readiness</span> Checklist</div>
+    <div class="header-sub">B.Tech CSIT & AIML · Internal Faculty · Practical/Skill Exam</div>
+  </header>
+
+  <!-- SETUP BANNER (shown until API configured) -->
+  <div class="setup-banner show" id="setup-banner">
+    <p>⚙️ <strong>Admin Setup Required:</strong> Paste your Google Apps Script Web App URL below to enable live backend sync.</p>
+    <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/YOUR_ID/exec">
+    <button onclick="saveApiUrl()">Save URL</button>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('faculty',this)">📋 My Checklist</button>
+    <button class="tab" onclick="switchTab('admin',this)">📊 Admin Dashboard</button>
+  </div>
+
+  <!-- ═══ FACULTY VIEW ═══ -->
+  <div class="view active" id="view-faculty">
+    <div id="form-area">
+      <div class="field-label">Select Your Name</div>
+      <div class="select-wrap">
+        <select id="faculty-select" onchange="onFacultyChange()">
+          <option value="">— Choose your name —</option>
+        </select>
+      </div>
+
+      <div id="chk-area" style="display:none;">
+        <div class="chk-card">
+          <div class="chk-head">
+            <div class="chk-head-name" id="sel-name"></div>
+            <div class="chk-head-meta" id="sel-meta"></div>
+            <div class="chk-head-tags" id="sel-tags"></div>
+          </div>
+          <div id="chk-items"></div>
+        </div>
+        <button class="submit-btn" id="submit-btn" onclick="submitChecklist()">Submit My Status</button>
+      </div>
+    </div>
+
+    <div class="thankyou" id="thankyou">
+      <div class="ty-glow">✅</div>
+      <div class="ty-title">Status Submitted!</div>
+      <div class="ty-sub">Your response has been saved to the admin dashboard.</div>
+      <button class="ty-btn" onclick="resetForm()">Submit Another</button>
+    </div>
+  </div>
+
+  <!-- ═══ ADMIN VIEW ═══ -->
+  <div class="view" id="view-admin">
+    <div class="admin-gate" id="admin-gate">
+      <div class="gate-icon">🔒</div>
+      <div class="gate-title">Admin Dashboard</div>
+      <div class="gate-sub">Enter the admin password to view all faculty responses</div>
+      <input class="gate-input" type="password" id="admin-pass" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdmin()">
+      <button class="gate-btn" onclick="checkAdmin()">Unlock</button>
+    </div>
+
+    <div id="admin-dash" style="display:none;">
+      <div class="refresh-note"><span class="live-dot"></span>Live data from Google Sheets &nbsp;·&nbsp; <a href="#" onclick="loadDashData();return false;" style="color:var(--muted);text-decoration:none;">↻ Refresh</a></div>
+      <div class="dash-stats" id="dash-stats">
+        <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Total Faculty</div></div>
+        <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">All 3 Done</div></div>
+        <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Ext. Confirmed</div></div>
+        <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Slips Prepared</div></div>
+      </div>
+
+      <div class="action-bar">
+        <button class="act-btn primary" onclick="copyReport()">📋 Copy WhatsApp Report</button>
+        <button class="act-btn" onclick="loadDashData()">↻ Refresh Data</button>
+      </div>
+
+      <div class="filter-bar" id="filter-bar"></div>
+      <input class="dash-search" id="dash-search" placeholder="Search faculty or course…" oninput="renderDash()">
+
+      <div class="table-wrap">
+        <table class="dash-table">
+          <thead><tr>
+            <th>Faculty</th>
+            <th>Course</th>
+            <th style="text-align:center;">Ext.</th>
+            <th style="text-align:center;">Slips</th>
+            <th style="text-align:center;">Informed</th>
+            <th>Submitted</th>
+          </tr></thead>
+          <tbody id="dash-tbody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   FACULTY DATA
+═══════════════════════════════════════════ */
+const FACULTY = [
+  {id:'cs-fy-1', name:'Dr. Sunil D. Kale',          course:'Data Structures',                      code:'CS23201', dept:'CSIT', yr:'FY', sem:'II'},
+  {id:'cs-fy-2', name:'Prof. Ashish Jadhao',         course:'Web Technology & Vulnerability',       code:'CS23202', dept:'CSIT', yr:'FY', sem:'II'},
+  {id:'cs-fy-3', name:'Prof. Rahul M. Raut',         course:'OS, Compilers & Security Engg.',       code:'CS23203', dept:'CSIT', yr:'FY', sem:'II'},
+  {id:'cs-fy-4', name:'Prof. Santosh Prabhakaran',   course:'Human Behaviour & Cyber Laws',         code:'CS23204', dept:'CSIT', yr:'FY', sem:'II'},
+  {id:'cs-fy-5', name:'Dr. Avinash Bhute',           course:'Python Programming',                   code:'CS23205', dept:'CSIT', yr:'FY', sem:'II'},
+  {id:'cs-fy-6', name:'Dr. Jyoti C. Vanikar',        course:'Applied Mathematics II',               code:'CS23206', dept:'CSIT', yr:'FY', sem:'II'},
+  {id:'cs-sy-1', name:'Dr. Aaradhana A. Deshmukh',  course:'Advanced Cryptography',                code:'CS23401', dept:'CSIT', yr:'SY', sem:'IV'},
+  {id:'cs-sy-2', name:'Dr. Kapil N. Vhatkar',        course:'Cloud & Infrastructure Security',      code:'CS23402', dept:'CSIT', yr:'SY', sem:'IV'},
+  {id:'cs-sy-3', name:'Prof. Rajesh R.',             course:'Network Security',                     code:'CS23403', dept:'CSIT', yr:'SY', sem:'IV'},
+  {id:'cs-sy-4', name:'Prof. Pallavi R. Shingade',  course:'Digital Forensics',                    code:'CS23404', dept:'CSIT', yr:'SY', sem:'IV'},
+  {id:'cs-sy-5', name:'Prof. Shwetal Raipure',       course:'Application Security',                 code:'CS23405', dept:'CSIT', yr:'SY', sem:'IV'},
+  {id:'cs-sy-6', name:'Dr. Shradha S. Chavan',       course:'Secure Software Development',          code:'CS23406', dept:'CSIT', yr:'SY', sem:'IV'},
+  {id:'cs-ty-1', name:'Dr. Abhijit D. Jadhav',       course:'Blockchain & Cryptography',            code:'CS23601', dept:'CSIT', yr:'TY', sem:'VI'},
+  {id:'cs-ty-2', name:'Dr. Abhijit D. Jadhav',       course:'SIEM and SOAR',                       code:'CS23602', dept:'CSIT', yr:'TY', sem:'VI'},
+  {id:'cs-ty-3', name:'Dr. Mahendra B. Salunke',     course:'Cyber Threat Management',              code:'CS23603', dept:'CSIT', yr:'TY', sem:'VI'},
+  {id:'cs-ty-4', name:'Dr. Chhaya Nayak',            course:'Authentication & Identity Mgmt.',      code:'CS23604', dept:'CSIT', yr:'TY', sem:'VI'},
+  {id:'cs-ty-5', name:'Prof. Santosh Prabhakran',    course:'Security Compliances & Audit',         code:'CS23605', dept:'CSIT', yr:'TY', sem:'VI'},
+  {id:'cs-ty-6', name:'Dr. Vanita Agrawal',          course:'IoT Security',                         code:'CS23607', dept:'CSIT', yr:'TY', sem:'VI'},
+  {id:'ai-fy-1', name:'Dr. Jyoti C. Vanikar',        course:'Applied Mathematics II',               code:'AI0201',  dept:'AIML', yr:'FY', sem:'II'},
+  {id:'ai-fy-2', name:'Dr. Sunil D. Kale',           course:'Data Structures',                      code:'AI0202',  dept:'AIML', yr:'FY', sem:'II'},
+  {id:'ai-fy-3', name:'Dr. Chhaya Nayak',            course:'Operating System',                     code:'AI0203',  dept:'AIML', yr:'FY', sem:'II'},
+  {id:'ai-fy-4', name:'Dr. Rudresh D. Shirwaikar',   course:'Fundamentals of Machine Learning',     code:'AI0204',  dept:'AIML', yr:'FY', sem:'II'},
+  {id:'ai-fy-5', name:'Dr. Avinash Bhute',           course:'Python Programming',                   code:'AI0205',  dept:'AIML', yr:'FY', sem:'II'},
+  {id:'ai-fy-6', name:'Dr. Abhijit B. Vhatkar',      course:'Business Fundamentals',                code:'AI0206',  dept:'AIML', yr:'FY', sem:'II'},
+  {id:'ai-sy-1', name:'Prof. Shwetal Raipure',       course:'Big Data Analytics',                   code:'AI0401',  dept:'AIML', yr:'SY', sem:'IV'},
+  {id:'ai-sy-2', name:'Prof. Ashish C. Jadhao',      course:'Web Application Development',          code:'AI0402',  dept:'AIML', yr:'SY', sem:'IV'},
+  {id:'ai-sy-3', name:'Dr. Shraddha Chavhan',        course:'Intro to Natural Language Processing', code:'AI0403',  dept:'AIML', yr:'SY', sem:'IV'},
+  {id:'ai-sy-4', name:'Dr. Kapil Vhatkar',           course:'Computer Networks',                    code:'AI0404',  dept:'AIML', yr:'SY', sem:'IV'},
+  {id:'ai-sy-5', name:'Prof. Rajesh R.',             course:'Software Dev & Operations',            code:'AI0405',  dept:'AIML', yr:'SY', sem:'IV'},
+  {id:'ai-sy-6', name:'Dr. Rudresh D. Shirwaikar',  course:'AI in Cybersecurity',                  code:'AI0406B', dept:'AIML', yr:'SY', sem:'IV'},
+];
+
+const ADMIN_PWD  = 'sspu2026';
+const API_KEY    = 'sspu_api_url';
+let   dashFilter = 'all';
+let   remoteData = {};   // { [id]: {ext,slips,info,ts} }
+let   currentChecks = {};
+
+/* ═══════════════════════════════════════════
+   API URL MANAGEMENT
+═══════════════════════════════════════════ */
+function getApiUrl() { return localStorage.getItem(API_KEY) || ''; }
+
+function saveApiUrl() {
+  const url = document.getElementById('api-url-input').value.trim();
+  if (!url.startsWith('https://script.google.com')) {
+    showToast('Please paste a valid Apps Script URL'); return;
+  }
+  localStorage.setItem(API_KEY, url);
+  document.getElementById('setup-banner').classList.remove('show');
+  showToast('✅ Backend URL saved!');
+}
+
+function checkSetupBanner() {
+  if (!getApiUrl()) {
+    document.getElementById('setup-banner').classList.add('show');
+  } else {
+    document.getElementById('setup-banner').classList.remove('show');
+  }
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+function init() {
+  checkSetupBanner();
+  buildFacultyDropdown();
+  buildDashFilters();
+}
+
+function buildFacultyDropdown() {
+  const sel = document.getElementById('faculty-select');
+  const groups = {};
+  FACULTY.forEach(f => {
+    const key = `${f.yr}|${f.dept}`;
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(f);
+  });
+  [['FY','CSIT'],['FY','AIML'],['SY','CSIT'],['SY','AIML'],['TY','CSIT']].forEach(([yr,dept]) => {
+    const arr = groups[`${yr}|${dept}`] || [];
+    if (!arr.length) return;
+    const og = document.createElement('optgroup');
+    og.label = `${yr} – ${dept} (Sem ${arr[0].sem})`;
+    arr.forEach(f => {
+      const o = document.createElement('option');
+      o.value = f.id;
+      o.textContent = `${f.name}  ·  ${f.code}`;
+      og.appendChild(o);
+    });
+    sel.appendChild(og);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   FACULTY FORM
+═══════════════════════════════════════════ */
+function onFacultyChange() {
+  const id  = document.getElementById('faculty-select').value;
+  const area = document.getElementById('chk-area');
+  if (!id) { area.style.display = 'none'; return; }
+
+  const f = FACULTY.find(x => x.id === id);
+  document.getElementById('sel-name').textContent = f.name;
+  document.getElementById('sel-meta').textContent = `${f.code} · ${f.course}`;
+  document.getElementById('sel-tags').innerHTML =
+    `<span class="tag tag-${f.dept.toLowerCase()}">${f.dept}</span>
+     <span class="tag tag-yr">${f.yr} · Sem ${f.sem}</span>`;
+
+  const saved = remoteData[id] || {};
+  currentChecks = { ext: saved.ext ?? false, slips: saved.slips ?? false, info: saved.info ?? false };
+  renderChkItems();
+  area.style.display = 'block';
+}
+
+function renderChkItems() {
+  const QUESTIONS = [
+    { key:'ext',   q:'External Faculty Confirmed?',  hint:'Examiner has confirmed date, time & subject.' },
+    { key:'slips', q:'Practical Slips Prepared?',    hint:'Lab slips / task sheets are printed and ready.' },
+    { key:'info',  q:'Students Informed?',           hint:'Students know exam date, time & venue.' },
+  ];
+  document.getElementById('chk-items').innerHTML = QUESTIONS.map(q =>
+    `<div class="chk-item ${currentChecks[q.key]?'checked':''}" onclick="toggleCheck('${q.key}',this)">
+      <div class="chk-box"><span class="chk-tick">✓</span></div>
+      <div class="chk-text"><div class="chk-q">${q.q}</div><div class="chk-hint">${q.hint}</div></div>
+    </div>`
+  ).join('');
+}
+
+function toggleCheck(key, el) {
+  currentChecks[key] = !currentChecks[key];
+  el.classList.toggle('checked', currentChecks[key]);
+}
+
+async function submitChecklist() {
+  const id = document.getElementById('faculty-select').value;
+  if (!id) return;
+  const f  = FACULTY.find(x => x.id === id);
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+  const apiUrl = getApiUrl();
+  if (!apiUrl) {
+    // fallback: save locally and show success
+    remoteData[id] = { ...currentChecks, ts: new Date().toISOString() };
+    showSuccess();
+    btn.disabled = false; btn.innerHTML = 'Submit My Status';
+    showToast('⚠️ No backend configured — saved locally only');
+    return;
+  }
+
+  const params = new URLSearchParams({
+    action:'submit', id, name:f.name, code:f.code,
+    course:f.course, dept:f.dept, yr:f.yr,
+    ext: currentChecks.ext, slips: currentChecks.slips, info: currentChecks.info
+  });
+
+  try {
+    const json = await jsonp(apiUrl, params);
+    if (json.success) {
+      remoteData[id] = { ...currentChecks, ts: new Date().toISOString() };
+      showSuccess();
+    } else {
+      showToast('❌ Error: ' + (json.error || 'Unknown'));
+    }
+  } catch(e) {
+    showToast('❌ Could not reach backend — check the URL in setup');
+  }
+  btn.disabled = false; btn.innerHTML = 'Submit My Status';
+}
+
+function showSuccess() {
+  document.getElementById('form-area').style.display = 'none';
+  document.getElementById('thankyou').style.display = 'block';
+}
+
+function resetForm() {
+  document.getElementById('faculty-select').value = '';
+  document.getElementById('chk-area').style.display = 'none';
+  document.getElementById('form-area').style.display = 'block';
+  document.getElementById('thankyou').style.display = 'none';
+}
+
+/* ═══════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════ */
+function switchTab(t, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-'+t).classList.add('active');
+  el.classList.add('active');
+  if (t === 'admin' && document.getElementById('admin-dash').style.display !== 'none') loadDashData();
+}
+
+/* ═══════════════════════════════════════════
+   ADMIN
+═══════════════════════════════════════════ */
+function checkAdmin() {
+  const v = document.getElementById('admin-pass').value.trim();
+  if (v === ADMIN_PWD) {
+    document.getElementById('admin-gate').style.display = 'none';
+    document.getElementById('admin-dash').style.display = 'block';
+    loadDashData();
+  } else {
+    showToast('Incorrect password');
+  }
+}
+
+async function loadDashData() {
+  const apiUrl = getApiUrl();
+  if (!apiUrl) { renderDash(); return; }
+
+  document.getElementById('dash-tbody').innerHTML =
+    '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">Fetching from Google Sheets…</td></tr>';
+
+  try {
+    const json = await jsonp(apiUrl, new URLSearchParams({ action:'getAll' }));
+    if (json.success) {
+      remoteData = {};
+      json.data.forEach(r => { remoteData[r.id] = r; });
+    } else {
+      showToast('❌ ' + (json.error || 'Fetch error'));
+    }
+  } catch(e) {
+    showToast('❌ Could not reach backend — check the URL in setup');
+  }
+  renderDash();
+}
+
+function buildDashFilters() {
+  const filters = [['all','All'],['CSIT','CSIT'],['AIML','AIML'],['FY','FY'],['SY','SY'],['TY','TY'],['pending','⚠ Pending']];
+  document.getElementById('filter-bar').innerHTML = filters.map(([f,l]) =>
+    `<button class="fbtn ${f==='all'?'on':''}" onclick="setFilter('${f}',this)">${l}</button>`
+  ).join('');
+}
+
+function setFilter(f, el) {
+  dashFilter = f;
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  renderDash();
+}
+
+function renderDash() {
+  const q = (document.getElementById('dash-search')?.value || '').toLowerCase();
+  let total=FACULTY.length, done=0, ext=0, slips=0, info=0;
+  FACULTY.forEach(f => {
+    const s = remoteData[f.id] || {};
+    if(s.ext)   ext++;
+    if(s.slips) slips++;
+    if(s.info)  info++;
+    if(s.ext && s.slips && s.info) done++;
+  });
+
+  document.getElementById('dash-stats').innerHTML = [
+    [total, total, 'Total Faculty'],
+    [done,  total, 'All 3 Done'],
+    [ext,   total, 'Ext. Confirmed'],
+    [slips, total, 'Slips Prepared'],
+  ].map(([v,t,l]) => `
+    <div class="stat-card">
+      <div class="stat-val">${v}</div>
+      <div class="stat-lbl">${l}</div>
+      <div class="progress-track"><div class="progress-fill" style="width:${Math.round(v/t*100)}%"></div></div>
+    </div>`).join('');
+
+  const visible = FACULTY.filter(f => {
+    const s = remoteData[f.id] || {};
+    const allDone = s.ext && s.slips && s.info;
+    const matchQ = !q || f.name.toLowerCase().includes(q) || f.course.toLowerCase().includes(q) || f.code.toLowerCase().includes(q);
+    if (!matchQ) return false;
+    if (dashFilter==='all') return true;
+    if (dashFilter==='CSIT') return f.dept==='CSIT';
+    if (dashFilter==='AIML') return f.dept==='AIML';
+    if (dashFilter==='FY')   return f.yr==='FY';
+    if (dashFilter==='SY')   return f.yr==='SY';
+    if (dashFilter==='TY')   return f.yr==='TY';
+    if (dashFilter==='pending') return !allDone;
+    return true;
+  });
+
+  function icon(val) {
+    if (val === true)  return '<span class="icon-yes">✓</span>';
+    if (val === false) return '<span class="icon-no">✗</span>';
+    return '<span class="icon-pend">—</span>';
+  }
+
+  function fmtTs(ts) {
+    if (!ts) return '<span class="icon-pend">—</span>';
+    try {
+      const d = new Date(ts);
+      return `<span class="ts-cell">${d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})} ${d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</span>`;
+    } catch(e) { return '—'; }
+  }
+
+  if (!visible.length) {
+    document.getElementById('dash-tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">No results</td></tr>';
+    return;
+  }
+
+  document.getElementById('dash-tbody').innerHTML = visible.map(f => {
+    const s = remoteData[f.id] || {};
+    return `<tr>
+      <td>
+        <div class="fname-cell">${f.name}</div>
+        <div class="fmeta-cell">${f.yr} &nbsp;<span class="tag tag-${f.dept.toLowerCase()}" style="padding:1px 6px;font-size:9px;">${f.dept}</span></div>
+      </td>
+      <td><div class="course-cell">${f.course}</div><div class="fmeta-cell">${f.code}</div></td>
+      <td style="text-align:center;">${icon(s.ext  ?? null)}</td>
+      <td style="text-align:center;">${icon(s.slips ?? null)}</td>
+      <td style="text-align:center;">${icon(s.info  ?? null)}</td>
+      <td>${fmtTs(s.ts)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function copyReport() {
+  const lines = ['*SSPU Practical Exam Readiness — May 2026*', ''];
+  const groups = {FY:{CSIT:[],AIML:[]},SY:{CSIT:[],AIML:[]},TY:{CSIT:[],AIML:[]}};
+  FACULTY.forEach(f => { groups[f.yr]?.[f.dept]?.push(f); });
+  ['FY','SY','TY'].forEach(yr => ['CSIT','AIML'].forEach(dept => {
+    const arr = groups[yr][dept] || [];
+    if (!arr.length) return;
+    lines.push(`*${yr} – ${dept}*`);
+    arr.forEach(f => {
+      const s = remoteData[f.id] || {};
+      lines.push(`${f.name} (${f.code})`);
+      lines.push(`  ${s.ext?'✅':'❌'} Ext. Confirmed   ${s.slips?'✅':'❌'} Slips Prepared   ${s.info?'✅':'❌'} Students Informed`);
+    });
+    lines.push('');
+  }));
+  navigator.clipboard.writeText(lines.join('\n')).then(() => showToast('📋 Copied to clipboard!'));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ═══════════════════════════════════════════
+   JSONP — bypasses CORS for Google Apps Script
+═══════════════════════════════════════════ */
+function jsonp(baseUrl, params, timeout = 12000) {
+  return new Promise((resolve, reject) => {
+    const cb  = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1e6);
+    params.set('callback', cb);
+    const url = baseUrl + '?' + params.toString();
+
+    const script = document.createElement('script');
+    script.src   = url;
+
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error('Timeout'));
+    }, timeout);
+
+    window[cb] = (data) => {
+      clearTimeout(timer);
+      cleanup();
+      resolve(data);
+    };
+
+    function cleanup() {
+      delete window[cb];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    script.onerror = () => { clearTimeout(timer); cleanup(); reject(new Error('Script load error')); };
+    document.head.appendChild(script);
+  });
+}
+
+init();
+</script>
+</body>
+</html>
